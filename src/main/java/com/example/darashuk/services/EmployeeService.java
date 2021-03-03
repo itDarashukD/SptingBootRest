@@ -2,46 +2,53 @@ package com.example.darashuk.services;
 
 
 
-import com.example.darashuk.dao.IEmployeeDao;
+import com.example.darashuk.dao.IEmployeeRepository;
 import com.example.darashuk.entity.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EmployeeService implements IEmployeeService {
 
-    private IEmployeeDao IEmployeeDao;
+    private IEmployeeRepository IEmployeeRepository;
 
     @Autowired
-    public EmployeeService(com.example.darashuk.dao.IEmployeeDao IEmployeeDao) {
-        this.IEmployeeDao = IEmployeeDao;
+    public EmployeeService(IEmployeeRepository IEmployeeRepository) {
+        this.IEmployeeRepository = IEmployeeRepository;
     }
 
-    @Transactional
+
     @Override
     public List<Employee> getAll() {
-       return IEmployeeDao.getAll();
+        return IEmployeeRepository.findAll();
     }
 
-    @Transactional
+
     @Override
     public void save(Employee employee) {
-        IEmployeeDao.save(employee);
+        IEmployeeRepository.save(employee);
     }
 
-    @Transactional
+
     @Override
     public Employee getById(int id) {
-        return IEmployeeDao.getById(id);
+        Employee employee = null;
+        Optional<Employee> optional = IEmployeeRepository.findById(id);
+
+        if (optional.isPresent()) {
+            employee = optional.get();
+        }
+        return employee;
     }
 
-    @Transactional
+
     @Override
     public void delete(int id) {
-        IEmployeeDao.delete(id);
+        IEmployeeRepository.deleteById(id);
 
     }
 }
